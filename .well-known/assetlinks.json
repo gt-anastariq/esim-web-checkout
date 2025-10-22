@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls", "delegate_permission/common.get_login_creds"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.esimtesting",
+      "sha256_cert_fingerprints": [
+        "5D:03:3B:E3:19:49:30:0E:7F:80:7B:C1:1F:EF:D2:C7:99:F0:A9:2F:F1:C2:AE:04:86:22:32:16:2F:18:8E:4D"
+      ]
+    }
+  }
+]
