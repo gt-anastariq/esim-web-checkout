@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eSIM Checkout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg text-center">
+        <!-- Header -->
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">eSIM Purchase Status</h1>
+        <p class="text-sm text-gray-500 mb-8">Simulating the final step of the web checkout process.</p>
+
+        <!-- Message Sending Functions -->
+        <script>
+            /**
+             * Sends a message back to the native Android app via the Chrome Custom Tabs Post Message API.
+             * The CCT session automatically listens to messages posted to the window it contains.
+             * @param {string} statusMessage - The status code to send (e.g., 'esim_web_checkout_success').
+             */
+            function sendPostMessage(statusMessage) {
+                console.log(`Sending message: ${statusMessage}`);
+                
+                // CRITICAL STEP: Use window.postMessage to communicate back to the native app.
+                // The targetOrigin is often '*', but for production, use a specific, validated origin
+                // if possible, although for CCT/DAL setups, the native side handles the secure routing.
+                window.postMessage(statusMessage, '*');
+
+                // Update UI after sending message
+                const resultDiv = document.getElementById('result-message');
+                resultDiv.textContent = `Message Sent: ${statusMessage}. Check the native app log!`;
+                resultDiv.classList.remove('hidden', 'text-red-500', 'text-green-500');
+                if (statusMessage.includes('success')) {
+                    resultDiv.classList.add('text-green-500');
+                } else {
+                    resultDiv.classList.add('text-red-500');
+                }
+            }
+
+            // Note: In a real flow, this function would be called by your server's success/failure page logic,
+            // not by a user clicking a button.
+        </script>
+
+        <!-- Status Message Area -->
+        <div id="result-message" class="hidden p-4 rounded-lg font-semibold bg-gray-50 transition duration-300 mb-6"></div>
+
+        <!-- Action Buttons -->
+        <div class="space-y-4">
+            <button 
+                onclick="sendPostMessage('esim_web_checkout_success')"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-200 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50"
+            >
+                Checkout Successful (Send Success Message)
+            </button>
+
+            <button 
+                onclick="sendPostMessage('esim_web_checkout_failure')"
+                class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-200 focus:outline-none focus:ring-4 focus:ring-red-500 focus:ring-opacity-50"
+            >
+                Checkout Failed (Send Failure Message)
+            </button>
+        </div>
+        
+        <p class="text-xs text-gray-400 mt-6">Ensure the native Android application is bound and listening via a CustomTabsSession with PostMessage enabled.</p>
+    </div>
+</body>
+</html>
